@@ -20,7 +20,7 @@ export class LnRpcClientFactory {
 
   public static async getLnRpc(): Promise<LnRpc> {
     if (this._lnRpcClient === undefined) {
-      const config = <LnRpcClientConfig>{
+      const config: LnRpcClientConfig = {
         server: process.env.LND_URL,
       };
 
