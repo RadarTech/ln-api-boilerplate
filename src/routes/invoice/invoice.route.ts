@@ -1,8 +1,9 @@
+import { Invoice, SendRequest } from '@radartech/lnrpc';
 import BigNumber from 'bignumber.js';
 import { NextFunction, Request, Response } from 'express';
 import { body, check, validationResult } from 'express-validator/check';
 import { logger } from '../../services';
-import { decodePayReq, generateInvoice, sendPayment } from '../../services/lnd';
+import { Lightning } from '../../services/lnd';
 import { BaseRoute } from '../route';
 
 /**
@@ -42,13 +43,15 @@ export class InvoiceRoute extends BaseRoute {
       '/pay',
       [
         check('invoice').exists(),
-        body('invoice').custom(async invoice => {
-          const payReq = await decodePayReq(invoice);
+        body('invoice').custom(async encodedPayReq => {
+          const decodedPayReq = await Lightning.client.decodePayReq({
+            payReq: encodedPayReq,
+          });
           // add custom payment conditions...ie. max invoice amount
-          if (new BigNumber(payReq.numSatoshis).gt(10000)) {
+          if (new BigNumber(decodedPayReq.numSatoshis).gt(10000)) {
             throw new Error(
               `Payment Request amount exceeds 10000 satoshi (${
-                payReq.numSatoshis
+                decodedPayReq.numSatoshis
               })`,
             );
           }
@@ -59,7 +62,7 @@ export class InvoiceRoute extends BaseRoute {
   }
 
   /**
-   * Get a newly generated invoice
+   * Get a newly generated invoice for 1000 sats
    * @class InvoiceRoute
    * @method get
    * @param req {Request}
@@ -68,7 +71,9 @@ export class InvoiceRoute extends BaseRoute {
    */
   private async get(req: Request, res: Response, next: NextFunction) {
     try {
-      const invoice = await generateInvoice();
+      const invoice = await Lightning.client.addInvoice({
+        value: '1000',
+      } as Invoice.AsObject);
       logger.info(`[InvoiceRoute] Invoice created: ${invoice}.`);
       res.json({ invoice });
     } catch (err) {
@@ -88,32 +93,31 @@ export class InvoiceRoute extends BaseRoute {
   private async pay(req: Request, res: Response, next: NextFunction) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      logger.info(
-        `[InvoiceRoute] Pay request internal error: ${errors.array()}.`,
-      );
+      logger.info(`[InvoiceRoute] /pay validation error: ${errors.array()}.`);
       res.status(400).json({ error: errors.array() });
       return;
     }
 
-    const sendPaymentResponse = await sendPayment(req.body.invoice);
-    if (sendPaymentResponse.paymentError) {
-      logger.info(
-        `[InvoiceRoute] LND SendPaymentSync error: ${
-          sendPaymentResponse.paymentError
-        }.`,
-      );
-      res.status(400).json({ error: sendPaymentResponse.paymentError });
-      return;
-    }
+    try {
+      const sendPaymentResponse = await Lightning.client.sendPaymentSync({
+        paymentRequest: req.body.invoice,
+      } as SendRequest.AsObject);
+      if (sendPaymentResponse.paymentError) {
+        throw new Error(sendPaymentResponse.paymentError);
+      }
 
-    const preimage = (sendPaymentResponse.paymentPreimage as Buffer).toString(
-      'hex',
-    );
-    logger.info(
-      `[InvoiceRoute] LND SendPayment complete for preimage: ${preimage}.`,
-    );
-    res.status(200).json({
-      preimage,
-    });
+      const preimage = (sendPaymentResponse.paymentPreimage as Buffer).toString(
+        'hex',
+      );
+      logger.info(
+        `[InvoiceRoute] /pay payment complete for preimage: ${preimage}.`,
+      );
+      res.status(200).json({
+        preimage,
+      });
+    } catch (err) {
+      logger.info(`[InvoiceRoute] /pay error: ${err}.`);
+      res.status(400).json({ error: err });
+    }
   }
 }

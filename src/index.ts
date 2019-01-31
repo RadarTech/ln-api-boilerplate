@@ -2,11 +2,7 @@ import dotenv from 'dotenv';
 import { Server } from './app';
 import { isTestEnv } from './env';
 import { logger } from './services';
-import {
-  getInfo,
-  getWalletBalance,
-  LnRpcSubscriptionManager,
-} from './services/lnd';
+import { Lightning, LnRpcSubscriptionManager } from './services/lnd';
 
 dotenv.config();
 
@@ -14,10 +10,13 @@ export const app = Server.bootstrap().app;
 
 if (!isTestEnv()) {
   (async () => {
-    logger.info(`[LND] Pubkey: ${(await getInfo()).identityPubkey}.`);
+    await Lightning.init();
+    logger.info(
+      `[LND] Pubkey: ${(await Lightning.client.getInfo({})).identityPubkey}.`,
+    );
     logger.info(
       `[LND] Confirmed Wallet Balance (sats): ${
-        (await getWalletBalance()).confirmedBalance
+        (await Lightning.client.walletBalance({})).confirmedBalance
       }.`,
     );
     await LnRpcSubscriptionManager.subscribeInvoices();
