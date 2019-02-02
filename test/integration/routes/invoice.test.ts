@@ -1,71 +1,55 @@
-// import { app } from '../../../src/index';
+import { LnRpc } from '@radartech/lnrpc';
+import { Lightning } from '../../../src/services/lnd';
+import { expect, lnrpcStub, rest } from '../../lib';
 
-// describe('invoice route', () => {
-//   it.skip('should GET invoice', done => {
-//     supertest(app)
-//       .get('/api/invoice')
-//       .end((err: any, res: supertest.Response) => {
-//         if (err) {
-//           done(err);
-//         } else {
-//           expect(res.status).toBe(200);
-//           expect(res.body.invoice).toBeDefined;
-//           done();
-//         }
-//       });
-//   });
+describe('invoice route', () => {
+  const client = rest.client();
+  const ABI_BASE = '/api/invoice';
 
-//   it.skip('should POST invoice/pay to pay route and return preimage', done => {
-//     supertest(app)
-//       .post('/api/invoice/pay')
-//       .send({
-//         invoice: 'invoice',
-//       })
-//       .end((err: any, res: supertest.Response) => {
-//         if (err) {
-//           done(err);
-//         } else {
-//           expect(res.status).toBe(200);
-//           expect(res.body.preimage).toBe('preimage');
-//           done();
-//         }
-//       });
-//   });
+  beforeEach(() => {
+    Lightning.client = { ...lnrpcStub } as LnRpc;
+  });
 
-//   it.skip('should return error on POST invoice/pay with >10000 sats', done => {
-//     supertest(app)
-//       .post('/api/invoice/pay')
-//       .send({
-//         invoice: 'invoice',
-//       })
-//       .end((err: any, res: supertest.Response) => {
-//         if (err) {
-//           done(err);
-//         } else {
-//           expect(res.status).toBe(400);
-//           expect(res.body.error[0].msg).toMatch(
-//             /^Payment Request amount exceeds 10000 satoshi.*$/,
-//           );
-//           done();
-//         }
-//       });
-//   });
+  it('should GET invoice', async () => {
+    const { status, body } = await client.get(ABI_BASE);
+    expect(status).to.equal(200);
+    expect(body.invoice).to.not.be.undefined;
+  });
 
-//   it.skip('should return paymentError on POST invoice/pay if LND SendPayment fails', done => {
-//     const expectedPaymentError = 'invoice expired';
-//     supertest(app)
-//       .post('/api/invoice/pay')
-//       .send({
-//         invoice: 'invoice',
-//       })
-//       .end((err: any, res: supertest.Response) => {
-//         if (err) {
-//           done(err);
-//         } else {
-//           expect(res.status).toBe(400);
-//           expect(res.body.error).toMatch(expectedPaymentError);
-//           done();
-//         }
-//       });
-//   });
-// });
+  it('should POST invoice/pay to pay route and return preimage', async () => {
+    const { status, body } = await client.post(`${ABI_BASE}/pay`).send({
+      invoice: 'invoice',
+    });
+    expect(status).to.equal(200);
+    expect(body.preimage).to.equal('deadbeef');
+  });
+
+  it('should return error on POST invoice/pay with >10000 sats', async () => {
+    Lightning.client.decodePayReq = () => {
+      return {
+        numSatoshis: 10001,
+      } as any;
+    };
+    const { status, body } = await client.post(`${ABI_BASE}/pay`).send({
+      invoice: 'invoice',
+    });
+    expect(status).to.equal(400);
+    expect(body.error[0].msg).to.match(
+      /^Payment Request amount exceeds 10000 satoshi.*$/,
+    );
+  });
+
+  it('should return paymentError on POST invoice/pay if LND SendPayment fails', async () => {
+    const expectedPaymentError = 'invoice expired';
+    Lightning.client.sendPaymentSync = () => {
+      return {
+        paymentError: expectedPaymentError,
+      } as any;
+    };
+    const { status, body } = await client.post(`${ABI_BASE}/pay`).send({
+      invoice: 'invoice',
+    });
+    expect(status).to.equal(400);
+    expect(body.error).to.equal(expectedPaymentError);
+  });
+});

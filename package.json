@@ -45,7 +45,6 @@
     "@types/mocha": "^5.2.5",
     "@types/morgan": "^1.7.35",
     "@types/node": "^10.3.2",
-    "@types/sinon": "^7.0.5",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "chai-http": "^4.2.1",
@@ -58,7 +57,6 @@
     "mocha-typescript": "^1.1.17",
     "nodemon": "^1.17.5",
     "prettier": "^1.14.3",
-    "sinon": "^7.2.3",
     "tslint": "^5.10.0",
     "typescript": "^3.0.3"
   },
