@@ -44,6 +44,6 @@ export const logger = winston.createLogger({
 /**
  * @param invoice the Invoice Object to log
  */
-export function logInvoice(invoice: Invoice.AsObject) {
+export function logInvoice(invoice: Invoice) {
   logger.info(`[LND] Invoice log: ${invoice.paymentRequest}.`);
 }

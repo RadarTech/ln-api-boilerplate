@@ -71,9 +71,10 @@ export class InvoiceRoute extends BaseRoute {
    */
   private async get(req: Request, res: Response, next: NextFunction) {
     try {
+      await Lightning.init();
       const invoice = await Lightning.client.addInvoice({
         value: '1000',
-      } as Invoice.AsObject);
+      } as Invoice);
       logger.info(`[InvoiceRoute] Invoice created: ${invoice}.`);
       res.json({ invoice });
     } catch (err) {
@@ -101,7 +102,7 @@ export class InvoiceRoute extends BaseRoute {
     try {
       const sendPaymentResponse = await Lightning.client.sendPaymentSync({
         paymentRequest: req.body.invoice,
-      } as SendRequest.AsObject);
+      } as SendRequest);
       if (sendPaymentResponse.paymentError) {
         throw new Error(sendPaymentResponse.paymentError);
       }

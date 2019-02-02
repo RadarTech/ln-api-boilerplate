@@ -13,15 +13,15 @@ export class LnRpcSubscriptionManager {
   private static _invoiceSubscriber: any;
 
   public static async subscribeInvoices(
-    eventCallback: (invoice: Invoice.AsObject) => void = logInvoice,
+    eventCallback: (invoice: Invoice) => void = logInvoice,
   ): Promise<void> {
     if (this._invoiceSubscriber === undefined) {
       this._invoiceSubscriber = await Lightning.client.subscribeInvoices(<
-        InvoiceSubscription.AsObject
+        InvoiceSubscription
       >{});
     }
 
-    this._invoiceSubscriber.on('data', (invoice: Invoice.AsObject) => {
+    this._invoiceSubscriber.on('data', (invoice: Invoice) => {
       eventCallback(invoice);
     });
   }
