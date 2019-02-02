@@ -1,19 +1,10 @@
-import * as chai from 'chai';
-import chaiHttp = require('chai-http');
-
-chai.use(chaiHttp);
-
-const expect = chai.expect;
-
-import { app } from '../../../src/index';
+import { expect, rest } from '../../lib';
 
 describe('ping route', () => {
+  const client = rest.client();
+
   it('should return pong', async () => {
-    return chai
-      .request(app)
-      .get('/api/ping')
-      .then(res => {
-        expect(res.status).to.eql(200);
-      });
+    const { status } = await client.get('/api/ping');
+    expect(status).to.equal(200);
   });
 });
