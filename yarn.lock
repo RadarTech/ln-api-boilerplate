@@ -105,7 +105,7 @@
     tslint-config-prettier "^1.15.0"
     tslint-plugin-prettier "^2.0.0"
 
-"@radartech/lnrpc@^0.5.1-beta":
+"@radartech/lnrpc@^0.5.1-beta.0":
   version "0.5.1-beta.0"
   resolved "https://registry.yarnpkg.com/@radartech/lnrpc/-/lnrpc-0.5.1-beta.0.tgz#93921fb0b93091b52693550dd2044f16dc02defd"
   integrity sha512-pcnn57wyzW186iTy8koQchJsP0QzJkz2hY93Xg0kYDVpo/4Af1yDl8VdEUZjUkMODGwWKU/WjloeWdDsygzznA==

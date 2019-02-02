@@ -14,7 +14,7 @@
   "author": "RadarTech",
   "license": "MIT",
   "dependencies": {
-    "@radartech/lnrpc": "^0.5.1-beta",
+    "@radartech/lnrpc": "^0.5.1-beta.0",
     "bignumber.js": "^8.0.2",
     "body-parser": "^1.18.3",
     "compression": "^1.7.2",
