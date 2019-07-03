@@ -9,7 +9,9 @@
     "test": "NODE_ENV=test mocha 'test/**/*.test.ts'",
     "dev": "ts-node --type-check src/index.ts",
     "lint": "tslint -c tslint.json '{src,test}/**/*.ts' --fix",
-    "clean": "rm -rf ./build"
+    "clean": "rm -rf ./build",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "author": "RadarTech",
   "license": "MIT",
@@ -26,7 +28,8 @@
     "express-validator": "^5.3.1",
     "helmet": "^3.12.1",
     "morgan": "^1.9.0",
-    "winston": "^3.0.0"
+    "winston": "^3.0.0",
+    "snyk": "^1.189.0"
   },
   "devDependencies": {
     "@radar/tslint-config": "^5.0.0",
@@ -67,5 +70,6 @@
       "yarn lint",
       "git add"
     ]
-  }
+  },
+  "snyk": true
 }
