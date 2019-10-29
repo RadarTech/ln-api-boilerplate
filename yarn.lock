@@ -93,15 +93,16 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
-"@radar/lnrpc@^0.8.0-beta.0":
-  version "0.8.0-beta.0"
-  resolved "https://registry.yarnpkg.com/@radar/lnrpc/-/lnrpc-0.8.0-beta.0.tgz#6ea40bde2c3d853767299d4a3fe799584ea44e40"
-  integrity sha512-6vTBmXwmLNkzDT6IkoqBjcvIj7QUx030K8AMk74MJJXlE/UG5rvtRjZUn7vQK38hMtegQ0ZTc0udQMyttgg3QQ==
+"@radar/lnrpc@^0.8.0-beta.2":
+  version "0.8.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@radar/lnrpc/-/lnrpc-0.8.0-beta.2.tgz#d2490e37da45a4a4e5970a8a08ce4969b30d4c8c"
+  integrity sha512-RDGlbOg2MwcgX3UYfJumF7R1dyDrPQ4ds2EN8UHH90CexOk6yONMiEWDGdH1Xe5KaGiMO/Q0EQK8zfLCP3/sAA==
   dependencies:
     "@grpc/proto-loader" "^0.4.0"
     "@types/google-protobuf" "^3.2.7"
     grpc "^1.19.0"
     pkg-dir "^2.0.0"
+    protobufjs "^6.8.8"
     ts-protoc-gen "^0.8.0"
 
 "@radar/tslint-config@^5.0.0":
@@ -3136,7 +3137,7 @@ protobufjs@^5.0.3:
     glob "^7.0.5"
     yargs "^3.10.0"
 
-protobufjs@^6.8.6:
+protobufjs@^6.8.6, protobufjs@^6.8.8:
   version "6.8.8"
   resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-6.8.8.tgz#c8b4f1282fd7a90e6f5b109ed11c84af82908e7c"
   integrity sha512-AAmHtD5pXgZfi7GMpllpO3q1Xw1OYldr+dMUlAnffGTAhqkg72WdmSY71uKBF/JuyiKs8psYbtKrhi0ASCD8qw==
