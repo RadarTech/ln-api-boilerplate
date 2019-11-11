@@ -43,7 +43,7 @@ export class InvoiceRoute extends BaseRoute {
       [
         check('invoice').exists(),
         body('invoice').custom(async encodedPayReq => {
-          const { numSatoshis } = await Lightning.client.decodePayReq({
+          const { numSatoshis } = await Lightning.lnrpc.decodePayReq({
             payReq: encodedPayReq,
           });
           // add custom payment conditions...ie. max invoice amount
@@ -68,7 +68,7 @@ export class InvoiceRoute extends BaseRoute {
    */
   private async get(req: Request, res: Response, next: NextFunction) {
     try {
-      const { paymentRequest } = await Lightning.client.addInvoice({
+      const { paymentRequest } = await Lightning.lnrpc.addInvoice({
         value: '1000',
       });
       logger.info(`[InvoiceRoute] Invoice created: ${paymentRequest}.`);
@@ -90,7 +90,11 @@ export class InvoiceRoute extends BaseRoute {
   private async pay(req: Request, res: Response, next: NextFunction) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      logger.info(`[InvoiceRoute] /pay validation error: ${errors.array()}.`);
+      logger.info(
+        `[InvoiceRoute] /pay validation error: ${JSON.stringify(
+          errors.array(),
+        )}.`,
+      );
       res.status(400).json({ error: errors.array() });
       return;
     }
@@ -99,7 +103,7 @@ export class InvoiceRoute extends BaseRoute {
       const {
         paymentPreimage,
         paymentError,
-      } = await Lightning.client.sendPaymentSync({
+      } = await Lightning.lnrpc.sendPaymentSync({
         paymentRequest: req.body.invoice,
       });
       if (paymentError) {
