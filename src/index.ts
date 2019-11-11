@@ -12,11 +12,11 @@ if (!isTestEnv()) {
   (async () => {
     await Lightning.init();
     logger.info(
-      `[LND] Pubkey: ${(await Lightning.client.getInfo()).identityPubkey}.`,
+      `[LND] Pubkey: ${(await Lightning.lnrpc.getInfo()).identityPubkey}.`,
     );
     logger.info(
       `[LND] Confirmed Wallet Balance (sats): ${
-        (await Lightning.client.walletBalance()).confirmedBalance
+        (await Lightning.lnrpc.walletBalance()).confirmedBalance
       }.`,
     );
     await LnRpcSubscriptionManager.subscribeInvoices();

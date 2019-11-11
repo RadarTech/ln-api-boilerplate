@@ -11,15 +11,15 @@ get_macaroon() {
   echo "$(docker inspect -f "{{ index .Config.Labels \"lnd.hex_macaroon\"}}" $IMAGE)"
 }
 
-ALICE_IMAGE="radarion/lnd-integration-alice-btcd:v1.2.1-beta"
+ALICE_IMAGE="radarion/lnd-integration-alice-btcd:v1.2.3"
 export ALICE_TLS_CERT=$(get_cert $ALICE_IMAGE)
 export ALICE_MACAROON=$(get_macaroon $ALICE_IMAGE)
 
-BOB_IMAGE="radarion/lnd-integration-bob-btcd:v1.2.1-beta"
+BOB_IMAGE="radarion/lnd-integration-bob-btcd:v1.2.3"
 export BOB_TLS_CERT=$(get_cert $BOB_IMAGE)
 export BOB_MACAROON=$(get_macaroon $BOB_IMAGE)
 
-CHARLIE_IMAGE="radarion/lnd-integration-charlie-btcd:v1.2.1-beta"
+CHARLIE_IMAGE="radarion/lnd-integration-charlie-btcd:v1.2.3"
 export CHARLIE_TLS_CERT=$(get_cert $CHARLIE_IMAGE)
 export CHARLIE_MACAROON=$(get_macaroon $CHARLIE_IMAGE)
 
