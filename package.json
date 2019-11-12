@@ -11,6 +11,9 @@
     "lint": "tslint -c tslint.json '{src,test}/**/*.ts' --fix",
     "clean": "rm -rf ./build"
   },
+  "engines": {
+    "node": ">=8 <=11"
+  },
   "author": "RadarTech",
   "license": "MIT",
   "dependencies": {
