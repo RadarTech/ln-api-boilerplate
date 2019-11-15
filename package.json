@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc -p .",
     "start": "nodemon --ext ts --watch ./src --exec \"npm run dev\"",
-    "test": "NODE_ENV=test mocha 'test/**/*.test.ts'",
+    "test": "cross-env NODE_ENV=test mocha 'test/**/*.test.ts'",
     "dev": "ts-node --type-check src/index.ts",
     "lint": "tslint -c tslint.json '{src,test}/**/*.ts' --fix",
     "clean": "rm -rf ./build"
@@ -50,6 +50,7 @@
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "chai-http": "^4.2.1",
+    "cross-env": "^6.0.3",
     "husky": "^1.1.2",
     "lint-staged": "^9.2.0",
     "mocha": "^5.2.0",
