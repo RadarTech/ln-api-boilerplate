@@ -11,13 +11,10 @@
     "lint": "tslint -c tslint.json '{src,test}/**/*.ts' --fix",
     "clean": "rm -rf ./build"
   },
-  "engines": {
-    "node": ">=8 <=11"
-  },
   "author": "RadarTech",
   "license": "MIT",
   "dependencies": {
-    "@radar/lnrpc": "^0.8.0-beta.5",
+    "@radar/lnrpc": "^0.8.1-beta",
     "bignumber.js": "^8.0.2",
     "body-parser": "^1.18.3",
     "compression": "^1.7.2",

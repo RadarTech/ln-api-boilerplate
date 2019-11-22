@@ -15,6 +15,12 @@ This project contains three simnet nodes for local testing. By default, the exam
 yarn
 ```
 
+If the following error is thrown, run `npm rebuild`:
+
+```
+Error: Failed to load gRPC binary module because it was not installed for the current system
+```
+
 ### Setup the simnet environment
 
 For more details on the simnet suite, read the [simnet suite](#simnet-suite) section.
