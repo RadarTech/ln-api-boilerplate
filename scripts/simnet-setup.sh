@@ -6,7 +6,7 @@ if hash jq 2>/dev/null; then
     echo jq already installed
 else
     case "$OSTYPE" in
-      darwin*)  brew install jq ;; 
+      darwin*)  brew install jq ;;
       linux*)   sudo apt-get install jq ;;
       msys*)    chocolatey install jq ;;
       *)        echo "unknown: $OSTYPE" ;;
@@ -20,8 +20,8 @@ docker-compose up -d simnet-btcd && sleep 5
 docker-compose run simnet-btcctl generate 500 > /dev/null && sleep 5
 
 docker-compose up -d simnet-lnd-btcd-alice
-docker-compose up -d simnet-lnd-btcd-bob 
-docker-compose up -d simnet-lnd-btcd-charlie && sleep 5
+docker-compose up -d simnet-lnd-btcd-bob
+docker-compose up -d simnet-lnd-btcd-charlie && sleep 200
 
 # retreive pubkey for bob
 bob_btcd_pubkey=$(docker inspect -f "{{ index .Config.Labels \"lnd.pubkey\"}}" simnet-lnd-btcd-bob)
@@ -32,11 +32,8 @@ alice_btcd_pubkey=$(docker inspect -f "{{ index .Config.Labels \"lnd.pubkey\"}}"
 # retreive pubkey for charlie
 charlie_btcd_pubkey=$(docker inspect -f "{{ index .Config.Labels \"lnd.pubkey\"}}" simnet-lnd-btcd-charlie)
 
-# retreive pubkey for bob
-bob_btcd_pubkey=$(docker inspect -f "{{ index .Config.Labels \"lnd.pubkey\"}}" simnet-lnd-btcd-bob)
-
 # generate blocks to fund our address
-docker-compose run simnet-btcctl generate 500 > /dev/null
+docker-compose run simnet-btcctl generate 500 > /dev/null && sleep 200
 
 # send on-chain funds to bob
 bob_address=$(docker-compose exec simnet-lnd-btcd-bob lncli --chain bitcoin --network=simnet newaddress p2wkh | jq -r '.address')
